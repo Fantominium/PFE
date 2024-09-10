@@ -22,8 +22,6 @@ type DataListProps = {
 
 // Functional component to render a list of investors
 export const DataList: React.FC<DataListProps> = ({ listProps }) => {
-
-
     return (
       <List sx={{ width: '100%', maxWidth: 800, margin: 'auto', padding: 2}}>
         {listProps.map((datum) => (
@@ -33,7 +31,6 @@ export const DataList: React.FC<DataListProps> = ({ listProps }) => {
               <Typography variant="h6" component="h2" sx={{ fontWeight: 'bold' }}>
                 <Link href={`/investors/${encodeURIComponent(datum.investorName)}`} passHref>
                   <Typography
-                    component="a"
                     sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'none' }}
                   >
                     {datum.investorName}

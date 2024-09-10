@@ -3,23 +3,30 @@
 import { useQuery } from '@tanstack/react-query';
 import { useParams } from 'next/navigation';
 import { Box, Typography } from '@mui/material';
-import { getSingleInvestorCommitments } from '../../hooks/useFetchData'
-import Link from 'next/link';
+import { getInvestmentsByAssetClass } from '../../../hooks/useFetchData'
 
-
-const InvestorDetailPage = () => {
+const InvestorAssetClass = () => {
     const investorName  = useParams()["investorName"]; // Access the investor name from URL params
+    const assetClassName = useParams()["assetClass"];
 
-    const decodedInvestorName = `${decodeURIComponent(investorName?.toString())}`;
     
+    const decodedInvestorName = decodeURIComponent(investorName?.toString());
+    const decodedAssetClassName = `${decodeURIComponent(assetClassName?.toString())}`
+
     const { data: investorData, error, isLoading } = 
-    useQuery({ queryKey: ["investorData", investorName], 
-        queryFn:()=>getSingleInvestorCommitments(decodeURIComponent(investorName?.toString())),
+    useQuery({ queryKey: ["investorData", investorName, assetClassName], 
+        queryFn:()=>getInvestmentsByAssetClass(
+            decodeURIComponent(investorName?.toString()),
+            decodeURIComponent(assetClassName.toString())),
+
     });
 
   if (!investorData && isLoading) {
     return <Typography>{decodedInvestorName} Loading...</Typography>;
 
+  }
+  if(!investorData){
+    return<Typography>{decodedInvestorName} Empty...</Typography>;
   }
   if (error) {
     return <Typography>{error.message} Error</Typography>
@@ -31,20 +38,14 @@ const InvestorDetailPage = () => {
       <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
         {decodedInvestorName}
       </Typography>
+      <Typography variant="h5" component="h5" sx={{ mb: 2 }}>
+        {decodedAssetClassName}
+      </Typography>
       {investorData.map((datum:{commitmentAssetClass:string, commitmentCurrency:string, commitmentAmount:number})=>(
         <>
-        <Typography variant="h6" component="h2" 
-        sx={{ cursor: 'pointer', color: 'primary.main', textDecoration: 'none' }}
-        >
-          <Link 
-          href=
-          {`/assetClasses/${investorName.toString()}/${encodeURIComponent(datum.commitmentAssetClass)}`} 
-          passHref>
-            <Typography variant="body1">
-                Asset Class: {datum.commitmentAssetClass}
-            </Typography>
-          </Link>
-          </Typography>
+        <Typography variant="body1">
+            Asset Class: {datum.commitmentAssetClass}
+        </Typography>
         <Typography variant="body1">
             Currency: {datum.commitmentCurrency}
         </Typography>
@@ -59,4 +60,4 @@ const InvestorDetailPage = () => {
   );
 };
 
-export default InvestorDetailPage;
+export default InvestorAssetClass;

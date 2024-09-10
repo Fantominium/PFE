@@ -16,12 +16,9 @@ export default function Home() {
   // Render when data is available
   return (
     <main>
-      <h1>Investors</h1>
       {
-        data ? 
-          <>
+        data ?    
             <DataList listProps={data} /> 
-          </>
           : 
         <p>No Data available</p>
       }

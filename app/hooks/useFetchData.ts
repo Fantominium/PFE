@@ -1,9 +1,10 @@
 import axios from 'axios';
-import { log } from 'console';
 
 export const getInvestorsListAgg = async() => {
+    const baseUrl = 'http://localhost:8181/investors';
+
     try {
-        const res = await axios.get("http://localhost:8080/investors/investorList")
+        const res = await axios.get(`${baseUrl}/investorList`)
         if (res.status == 200)
             return res.data;
     } catch (error) {
@@ -14,7 +15,7 @@ export const getInvestorsListAgg = async() => {
 export const getSingleInvestorCommitments = async (investorName: any) => {
     
     try {
-        const baseUrl = 'http://localhost:8080/investors';
+        const baseUrl = 'http://localhost:8181/investors';
 
         const res = await axios.get(`${baseUrl}?investor_name=${encodeURIComponent(investorName)}`);
             
@@ -30,16 +31,18 @@ export const getSingleInvestorCommitments = async (investorName: any) => {
     }
 }
 
-export const updateBooking = async (booking: any) => {
+export const getInvestmentsByAssetClass = async (investorName: any, assetClass: any) => {
     try {
-        const res = await axios.put(`http://localhost:8080/updateBookings/${booking.id}`, {body: booking})
-        if(res.status == 200 ){
-            return{
-                success: true,
-                message: "Booking Updated"
-            }
+        const baseUrl = 'http://localhost:8181/investors';
+
+        const res = await axios.get(`${baseUrl}/commitmentsByClass?investor_name=${encodeURIComponent(investorName)}&asset_class=${encodeURIComponent(assetClass)}`);
+            
+        if (res.status == 200){
+                return res.data;         
         }
     } catch (error) {
-        
+        console.log('something went wrong');
+
+        throw error;
     }
 }
